@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.util.EnumResolver
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import feign.RequestInterceptor
 import feign.Response
 import feign.codec.Decoder
 import feign.codec.ErrorDecoder
@@ -23,6 +24,7 @@ import org.springframework.cloud.openfeign.support.ResponseEntityDecoder
 import org.springframework.cloud.openfeign.support.SpringDecoder
 import org.springframework.cloud.openfeign.support.SpringEncoder
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -35,7 +37,7 @@ class FeignClientConfiguration(
     val props: NpsFeignConfiguration,
     val errorHandler: ErrorHandler
 ) {
-    private val bearerToken = "abc"
+    private val bearerToken =  "YTVlZmQ0YWEtNjgwNC00MzA5LWExYTMtZGE3ODFiZTlmYjc0"// Base64 encode value of:- "a5efd4aa-6804-4309-a1a3-da781be9fb74"
     private val objectMapper = createObjectMapper()
 
     private fun createObjectMapper(): ObjectMapper {
@@ -60,9 +62,9 @@ class FeignClientConfiguration(
             }
     }
 
-//    @Bean
-//    fun authInterceptor() =
-//        RequestInterceptor {it.header(HttpHeaders.AUTHORIZATION, "Bearer $bearerToken")}
+    @Bean
+    fun authInterceptor() =
+        RequestInterceptor {it.header(HttpHeaders.AUTHORIZATION, "Bearer $bearerToken")}
 
     @Bean
     fun feignDecoder() = ResponseEntityDecoder(SpringDecoder({messageConverters()}, customizers()))
